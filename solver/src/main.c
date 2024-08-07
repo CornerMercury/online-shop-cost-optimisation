@@ -48,11 +48,12 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    int count;
+    size_t count;
     CardOption *cart = parse_json_list(json_str, &count);
     free(json_str);
+
     State state;
-    solve(&cart, &state);
+    solve(cart, count, &state);
     free_card_options(cart, count);
     free_state(&state);
     return EXIT_SUCCESS;

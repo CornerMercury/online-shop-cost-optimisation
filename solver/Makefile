@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I./include -Wall -Wextra -Werror
+CFLAGS = -I./include -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable
 
 SRC_DIR = src
 OBJ_DIR = obj

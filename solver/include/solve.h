@@ -14,7 +14,7 @@ typedef struct {
     struct hashmap *map;
     uint64_t card_cost;
     uint64_t delivery_cost;
-    int seller_count;
+    size_t seller_count;
 } SellerMap;
 
 typedef struct {
@@ -24,7 +24,7 @@ typedef struct {
 } State;
 
 
-void solve(CardOption **cart, State *state);
+void solve(CardOption *cart, size_t cart_count, State *state);
 
 void free_state(State *state);
 

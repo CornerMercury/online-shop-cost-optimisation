@@ -1,4 +1,5 @@
 #include "solve.h"
+#include "reduce_cart.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -32,12 +33,12 @@ void free_state(State *state) {
     free(state->best_seller_map);
     hashmap_free(state->current_seller_map->map);
     free(state->current_seller_map);
-    free(state);
 }
 
 
 
-void solve(CardOption **cart, State *state) {
+void solve(CardOption *cart, size_t cart_count, State *state) {
     init_state(state);
+    remove_uncommon_sellers(cart, cart_count);
     return;
 }

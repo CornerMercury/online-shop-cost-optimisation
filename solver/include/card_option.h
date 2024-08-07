@@ -9,18 +9,18 @@
 typedef struct {
     int available;
     int cost;
-    char *seller_name;
+    char *name;
 } Seller;
 
 typedef struct {
     Seller *sellers;
-    int seller_count;
+    size_t seller_count;
     int amount;
     char *url;
 } CardOption;
 
-CardOption *parse_json_list(const char *json_str, int *count);
+CardOption *parse_json_list(const char *json_str, size_t *count);
 
-void free_card_options(CardOption *options, int count);
+void free_card_options(CardOption *options, size_t count);
 
 #endif
