@@ -1,10 +1,28 @@
 #include "solve.h"
-#include "reduce_cart.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "reduce_cart.h"
+#include "constants.h"
+
+typedef struct {
+    char *seller_name;
+    ItemInfo item_infos[MAX_UNIQUE_CARDS_PER_SELLER];
+    size_t item_info_count;
+} ItemInfoKey;
+
+static int hashmap_compare(const void *a, const void *b, void *udata) {
+    const ItemInfoKey *item_info_key_a = a;
+    const ItemInfoKey *item_info_key_b = b;
+    return strcmp(item_info_key_a->seller_name, item_info_key_b->seller_name);
+}
+
+static uint64_t hashmap_hash(const void *item, uint64_t seed0, uint64_t seed1) {
+    const ItemInfoKey *item_info_key = item;
+    return hashmap_sip(item_info_key->seller_name, strlen(item_info_key->seller_name), seed0, seed1);
+}
 
 void init_seller_map(SellerMap *seller_map) {
-    seller_map->map = hashmap_new(sizeof(CardInfo *), 0, 0, 0, 0, 0, NULL, NULL);
+    seller_map->map = hashmap_new(sizeof(ItemInfoKey), 0, 0, 0, hashmap_hash, hashmap_compare, NULL, NULL);
     seller_map->card_cost = 0;
     seller_map->delivery_cost = 0;
     seller_map->seller_count = 0;
@@ -36,9 +54,23 @@ void free_state(State *state) {
 }
 
 
-
-void solve(CardOption **options, size_t option_count, State *state) {
+// DFS on first layer, used for setup and printing
+int solve(CardOption **items, size_t item_count, State *state) {
     init_state(state);
-    remove_uncommon_sellers(options, option_count);
-    return;
+    SellerMap *current_seller_map = state->current_seller_map;
+    if (item_count == 0) {
+        fprintf(stderr, "The number of items is 0\n");
+        return EXIT_FAILURE;
+    }
+    remove_uncommon_sellers(items, item_count);
+    // Populate hashmap
+    for (size_t i = 0; i < item_count; i++) {
+        for (size_t j = 0; j < items[i]->seller_count; j++) {
+            char *seller_name = items[i]->sellers[j].name;
+            if (!hashmap_get(current_seller_map->map, &(ItemInfoKey) {.seller_name=seller_name})) {
+                hashmap_set(current_seller_map->map, &(ItemInfoKey) {.seller_name=seller_name, .item_infos={}, .item_info_count=0});
+            }
+        }
+    }
+    return EXIT_SUCCESS;
 }

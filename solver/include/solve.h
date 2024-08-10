@@ -8,7 +8,7 @@ typedef struct {
     int amount;
     uint64_t total_cost;
     char* url;
-} CardInfo;
+} ItemInfo;
 
 typedef struct {
     struct hashmap *map;
@@ -24,7 +24,7 @@ typedef struct {
 } State;
 
 
-void solve(CardOption **cart, size_t cart_count, State *state);
+int solve(CardOption **items, size_t item_count, State *state);
 
 void free_state(State *state);
 

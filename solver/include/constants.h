@@ -7,5 +7,6 @@ static const int MED_DEL = 185;
 static const int MIN_AVAILABLE = 0;
 // minimum of 1 (or 0 to save pennies)
 static const int MIN_DUPLICATE_SELLERS = 2;
+#define MAX_UNIQUE_CARDS_PER_SELLER 20
 
 #endif
