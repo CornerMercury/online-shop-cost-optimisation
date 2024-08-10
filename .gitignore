@@ -3,3 +3,6 @@ carts/
 webscraper/
 solver/obj/
 solver/solver
+solver/.idea
+.idea/
+solver
