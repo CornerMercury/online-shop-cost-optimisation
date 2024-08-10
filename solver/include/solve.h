@@ -24,7 +24,7 @@ typedef struct {
 } State;
 
 
-void solve(CardOption *cart, size_t cart_count, State *state);
+void solve(CardOption **cart, size_t cart_count, State *state);
 
 void free_state(State *state);
 

@@ -37,8 +37,8 @@ void free_state(State *state) {
 
 
 
-void solve(CardOption *cart, size_t cart_count, State *state) {
+void solve(CardOption **options, size_t option_count, State *state) {
     init_state(state);
-    remove_uncommon_sellers(cart, cart_count);
+    remove_uncommon_sellers(options, option_count);
     return;
 }

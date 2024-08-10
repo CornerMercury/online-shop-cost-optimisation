@@ -4,6 +4,6 @@
 #include <stddef.h>
 #include "card_option.h"
 
-void remove_uncommon_sellers(CardOption *cart, size_t count);
+void remove_uncommon_sellers(CardOption **options, size_t count);
 
 #endif

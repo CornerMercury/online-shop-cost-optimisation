@@ -49,9 +49,8 @@ int main(int argc, char **argv) {
     }
 
     size_t count;
-    CardOption *cart = parse_json_list(json_str, &count);
+    CardOption **cart = parse_json_list(json_str, &count);
     free(json_str);
-
     State state;
     solve(cart, count, &state);
     free_card_options(cart, count);

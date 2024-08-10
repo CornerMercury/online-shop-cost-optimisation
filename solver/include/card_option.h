@@ -19,8 +19,10 @@ typedef struct {
     char *url;
 } CardOption;
 
-CardOption *parse_json_list(const char *json_str, size_t *count);
+CardOption **parse_json_list(const char *json_str, size_t *count);
 
-void free_card_options(CardOption *options, size_t count);
+size_t get_card_options_size(CardOption **options, size_t count);
+
+void free_card_options(CardOption **options, size_t count);
 
 #endif
