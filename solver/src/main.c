@@ -4,9 +4,6 @@
 #include "card_option.h"
 #include "solve.h"
 
-//void output_solution(SellerArray solution) {
-//}
-
 int read_file(const char *filename, char **content) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -36,6 +33,20 @@ int read_file(const char *filename, char **content) {
     return 0;
 }
 
+void output_solution(SellerArray solution) {
+    for (size_t i = 0; i < solution.seller_count; i++) {
+        ItemInfoKey key = solution.array[i];
+        printf("%s:\n", key.seller_name);
+        for (size_t j = 0; j < key.item_info_count; j++) {
+            ItemInfo info = key.item_infos[j];
+            printf("    x%d %s&amount=%d €%.2f\n", info.amount, info.url, info.amount, (double) info.total_cost / 100);
+        }
+    }
+    printf("\nTotal cost: €%.2f\n", (double) (solution.card_cost + solution.delivery_cost) / 100);
+    printf("Total card cost: €%.2f\n", (double) solution.card_cost / 100);
+    printf("Total delivery cost: €%.2f\n", (double) solution.delivery_cost / 100);
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "Command in form 'solver <filename>\n");
@@ -60,7 +71,7 @@ int main(int argc, char **argv) {
         free_state(&state);
         return EXIT_FAILURE;
     };
-//    output_solution(state.best_seller_array);
+    output_solution(*state.best_seller_array);
     free_card_options(cart, count);
     free_state(&state);
     return EXIT_SUCCESS;
