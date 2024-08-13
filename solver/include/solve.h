@@ -1,25 +1,38 @@
 #ifndef SOLVE_H
 #define SOLVE_H
 
-#include "hashmap.h"
 #include "card_option.h"
+#include "constants.h"
 
 typedef struct {
     int amount;
-    uint64_t total_cost;
-    char* url;
+    int total_cost;
+    char *url;
 } ItemInfo;
 
 typedef struct {
+    char *seller_name;
+    ItemInfo item_infos[MAX_UNIQUE_CARDS_PER_SELLER];
+    size_t item_info_count;
+} ItemInfoKey;
+
+typedef struct {
+    ItemInfoKey *array;
+    int card_cost;
+    int delivery_cost;
+    size_t seller_count;
+} SellerArray;
+
+typedef struct {
     struct hashmap *map;
-    uint64_t card_cost;
-    uint64_t delivery_cost;
+    int card_cost;
+    int delivery_cost;
     size_t seller_count;
 } SellerMap;
 
 typedef struct {
-    SellerMap *best_seller_map;
-    uint64_t min_cost;
+    SellerArray *best_seller_array;
+    int min_cost;
     SellerMap *current_seller_map;
 } State;
 

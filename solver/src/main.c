@@ -4,6 +4,9 @@
 #include "card_option.h"
 #include "solve.h"
 
+//void output_solution(SellerArray solution) {
+//}
+
 int read_file(const char *filename, char **content) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -55,7 +58,9 @@ int main(int argc, char **argv) {
     if (solve(cart, count, &state)) {
         free_card_options(cart, count);
         free_state(&state);
+        return EXIT_FAILURE;
     };
+//    output_solution(state.best_seller_array);
     free_card_options(cart, count);
     free_state(&state);
     return EXIT_SUCCESS;

@@ -49,7 +49,7 @@ CardOption **parse_json_list(const char *json_str, size_t *count) {
         cJSON *item = cJSON_GetArrayItem(json, i);
         options[i] = (CardOption *)malloc(sizeof(CardOption));
         if (options[i] == NULL) {
-            fprintf(stderr, "Failed to allocate memory for a CardOption\n");
+            fprintf(stderr, "Failed to allocate memory for an item\n");
             cJSON_Delete(json);
             free_card_options(options, i);
             return NULL;
