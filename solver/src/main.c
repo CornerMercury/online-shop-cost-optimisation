@@ -33,12 +33,15 @@ int read_file(const char *filename, char **content) {
     return 0;
 }
 
-void output_solution(SellerArray solution) {
-    for (size_t i = 0; i < solution.seller_count; i++) {
-        ItemInfoKey key = solution.array[i];
-        printf("%s:\n", key.seller_name);
-        for (size_t j = 0; j < key.item_info_count; j++) {
-            ItemInfo info = key.item_infos[j];
+void output_solution(SellerArray solution, char **id_to_name, size_t unique_seller_count) {
+    for (size_t i = 0; i < unique_seller_count; i++) {
+        SellerItems items = solution.array[i];
+        if (items.item_info_count == 0) {
+            continue;
+        }
+        printf("%s:\n", id_to_name[i]);
+        for (size_t j = 0; j < items.item_info_count; j++) {
+            ItemInfo info = items.item_infos[j];
             printf("    x%d %s&amount=%d €%.2f\n", info.amount, info.url, info.amount, (double) info.total_cost / 100);
         }
     }
@@ -62,17 +65,17 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    size_t count;
-    CardOption **cart = parse_json_list(json_str, &count);
+    size_t item_count;
+    char **id_to_name = malloc(0);
+    size_t unique_seller_count = 0;
+    CardOption **items = parse_json_list(json_str, &item_count, &id_to_name, &unique_seller_count);
     free(json_str);
     State state;
-    if (solve(cart, count, &state)) {
-        free_card_options(cart, count);
-        free_state(&state);
-        return EXIT_FAILURE;
+
+    if (!solve(items, item_count, &state, unique_seller_count)) {
+        output_solution(*state.best_seller_array, id_to_name, unique_seller_count);
     };
-    output_solution(*state.best_seller_array);
-    free_card_options(cart, count);
+    free_card_options(items, item_count, id_to_name, unique_seller_count);
     free_state(&state);
     return EXIT_SUCCESS;
 }
