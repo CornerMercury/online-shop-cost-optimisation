@@ -14,7 +14,7 @@ void init_seller_array(SellerArray *seller_array, size_t unique_seller_count) {
         exit(-1);
     }
     for (size_t i = 0; i < unique_seller_count; i++) {
-        seller_array->array[i] = (SellerItems){.item_infos={}, .item_info_count=0};
+        seller_array->array[i] = (SellerItems){.item_infos={}, .item_info_count=0, .item_count=0};
     }
     seller_array->card_cost = 0;
     seller_array->delivery_cost = 0;
@@ -35,7 +35,7 @@ void init_state(State *state, size_t unique_seller_count) {
     }
     init_seller_array(current_seller_array, unique_seller_count);
     state->best_seller_array = best_seller_array;
-    state->min_cost = INT_MAX;
+    state->min_cost = (int) MAX_COST + 1;
     state->current_seller_array = current_seller_array;
 }
 
@@ -90,22 +90,34 @@ void depth_first_search(CardOption **items, size_t item_count, State *state, int
         current_item->amount -= amount;
         int total_cost = amount * seller.cost;
         current_seller_array->card_cost += total_cost;
-        size_t seller_items_count = current_seller_array->array[seller.id].item_info_count;
+        size_t seller_items_count = current_seller_array->array[seller.id].item_count;
 
         // Calculate the delivery cost
         // Assumes there is only SMALL_DEL and MED_DEL, add more if needed
-        int delivery_change = 0;
+        int previous_delivery_from_this_seller = 0;
         if (seller_items_count == 0) {
-            delivery_change += SMALL_DEL;
             current_seller_array->seller_count += 1;
         }
-        if (seller_items_count + (size_t) amount > 4 && seller_items_count <= 4) {
-            delivery_change += MED_DEL;
+        else if (seller_items_count > 0 && seller_items_count <= 4) {
+            previous_delivery_from_this_seller = SMALL_DEL;
+        } else if (seller_items_count > 4) {
+            previous_delivery_from_this_seller = MED_DEL;
         }
 
-        current_seller_array->delivery_cost += delivery_change;
+        int new_delivery_from_this_seller = 0;
+        if (seller_items_count + (size_t) amount <= 4) {
+            new_delivery_from_this_seller = SMALL_DEL;
+        }
+        else if (seller_items_count + (size_t) amount > 4) {
+            new_delivery_from_this_seller = MED_DEL;
+        }
+        
+        int change_in_delivery = new_delivery_from_this_seller - previous_delivery_from_this_seller;
+
+        current_seller_array->delivery_cost += change_in_delivery;
         current_seller_array->array[seller.id].item_infos[seller_items_count] = (ItemInfo) {.amount=amount, .total_cost=total_cost, .url=current_item->url};
         current_seller_array->array[seller.id].item_info_count += 1;
+        current_seller_array->array[seller.id].item_count += amount;
 
         int new_item_count = item_count;
         if (current_item->amount == 0) {
@@ -114,8 +126,9 @@ void depth_first_search(CardOption **items, size_t item_count, State *state, int
         depth_first_search(items, new_item_count, state, sum_of_min_costs, unique_seller_count);
 
         // revert assumption of this seller
+        current_seller_array->array[seller.id].item_count -= amount;
         current_seller_array->array[seller.id].item_info_count -= 1;
-        current_seller_array->delivery_cost -= delivery_change;
+        current_seller_array->delivery_cost -= change_in_delivery;
         current_seller_array->card_cost -= total_cost;
         if (seller_items_count == 0) {
             current_seller_array->seller_count -= 1;
@@ -170,22 +183,34 @@ int solve(CardOption **items, size_t item_count, State *state, size_t unique_sel
         current_item->amount -= amount;
         int total_cost = amount * seller.cost;
         current_seller_array->card_cost += total_cost;
-        size_t seller_items_count = current_seller_array->array[seller.id].item_info_count;
+        size_t seller_items_count = current_seller_array->array[seller.id].item_count;
 
         // Calculate the delivery cost
         // Assumes there is only SMALL_DEL and MED_DEL, add more if needed
-        int delivery_change = 0;
+        int previous_delivery_from_this_seller = 0;
         if (seller_items_count == 0) {
-            delivery_change += SMALL_DEL;
             current_seller_array->seller_count += 1;
         }
-        if (seller_items_count + (size_t) amount > 4 && seller_items_count <= 4) {
-            delivery_change += MED_DEL;
+        else if (seller_items_count > 0 && seller_items_count <= 4) {
+            previous_delivery_from_this_seller = SMALL_DEL;
+        } else if (seller_items_count > 4) {
+            previous_delivery_from_this_seller = MED_DEL;
         }
 
-        current_seller_array->delivery_cost += delivery_change;
+        int new_delivery_from_this_seller = 0;
+        if (seller_items_count + (size_t) amount <= 4) {
+            new_delivery_from_this_seller = SMALL_DEL;
+        }
+        else if (seller_items_count + (size_t) amount > 4) {
+            new_delivery_from_this_seller = MED_DEL;
+        }
+        
+        int change_in_delivery = new_delivery_from_this_seller - previous_delivery_from_this_seller;
+
+        current_seller_array->delivery_cost += change_in_delivery;
         current_seller_array->array[seller.id].item_infos[seller_items_count] = (ItemInfo) {.amount=amount, .total_cost=total_cost, .url=current_item->url};
         current_seller_array->array[seller.id].item_info_count += 1;
+        current_seller_array->array[seller.id].item_count += amount;
 
         int new_item_count = item_count;
         if (current_item->amount == 0) {
@@ -194,8 +219,9 @@ int solve(CardOption **items, size_t item_count, State *state, size_t unique_sel
         depth_first_search(items, new_item_count, state, sum_of_min_costs, unique_seller_count);
 
         // revert assumption of this seller
+        current_seller_array->array[seller.id].item_count -= amount;
         current_seller_array->array[seller.id].item_info_count -= 1;
-        current_seller_array->delivery_cost -= delivery_change;
+        current_seller_array->delivery_cost -= change_in_delivery;
         current_seller_array->card_cost -= total_cost;
         if (seller_items_count == 0) {
             current_seller_array->seller_count -= 1;

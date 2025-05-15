@@ -34,11 +34,13 @@ int read_file(const char *filename, char **content) {
 }
 
 void output_solution(SellerArray solution, char **id_to_name, size_t unique_seller_count) {
+    int total_packages = 0;
     for (size_t i = 0; i < unique_seller_count; i++) {
         SellerItems items = solution.array[i];
         if (items.item_info_count == 0) {
             continue;
         }
+        total_packages += 1;
         printf("%s:\n", id_to_name[i]);
         for (size_t j = 0; j < items.item_info_count; j++) {
             ItemInfo info = items.item_infos[j];
@@ -48,6 +50,7 @@ void output_solution(SellerArray solution, char **id_to_name, size_t unique_sell
     printf("\nTotal cost: €%.2f\n", (double) (solution.card_cost + solution.delivery_cost) / 100);
     printf("Total card cost: €%.2f\n", (double) solution.card_cost / 100);
     printf("Total delivery cost: €%.2f\n", (double) solution.delivery_cost / 100);
+    printf("Total packages: %d\n", total_packages);
 }
 
 int main(int argc, char **argv) {

@@ -13,6 +13,7 @@ typedef struct {
 typedef struct {
     ItemInfo item_infos[MAX_UNIQUE_CARDS_PER_SELLER];
     size_t item_info_count;
+    size_t item_count;
 } SellerItems;
 
 typedef struct {
