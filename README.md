@@ -1,6 +1,8 @@
 
 # Online Shop Cost Optimisation
 
+Outdated! Use [this](https://github.com/CornerMercury/online-shop-cost-optimisation-LP) instead! It's a lot faster.
+
 A brute force algorithm to minimise cost for the delivery of a large amount of items, particularly optimised for situations where the delivery cost is not negligible and sellers are common between items.
 
 An example of this is [Cardmarket](https://www.cardmarket.com/en/). I made this project for this site, so feel free to ask for the webscraper.

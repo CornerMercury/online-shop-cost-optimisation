@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-static const size_t MAX_SELLERS = 8;
+static const size_t MAX_SELLERS = 10;
 static const int SMALL_DEL = 132;
 static const int MED_DEL = 237;
 // minimum of 1 (or 0 to save pennies)
